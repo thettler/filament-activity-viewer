@@ -1,12 +1,12 @@
 <?php
 
-namespace VendorName\Skeleton\Commands;
+namespace Thettler\FilamentActivityViewer\Commands;
 
 use Illuminate\Console\Command;
 
-class SkeletonCommand extends Command
+class FilamentActivityViewerCommand extends Command
 {
-    public $signature = 'skeleton';
+    public $signature = 'filament-activity-viewer';
 
     public $description = 'My command';
 
