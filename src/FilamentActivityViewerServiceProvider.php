@@ -2,18 +2,18 @@
 
 namespace Thettler\FilamentActivityViewer;
 
-use Filament\Support\Assets\AlpineComponent;
 use Filament\Support\Assets\Asset;
-use Filament\Support\Assets\Css;
-use Filament\Support\Assets\Js;
 use Filament\Support\Facades\FilamentAsset;
 use Filament\Support\Facades\FilamentIcon;
 use Illuminate\Filesystem\Filesystem;
 use Livewire\Features\SupportTesting\Testable;
+use Spatie\Activitylog\Models\Activity;
 use Spatie\LaravelPackageTools\Commands\InstallCommand;
 use Spatie\LaravelPackageTools\Package;
 use Spatie\LaravelPackageTools\PackageServiceProvider;
 use Thettler\FilamentActivityViewer\Commands\FilamentActivityViewerCommand;
+use Thettler\FilamentActivityViewer\Exceptions\FilamentActivityViewerOriginMissingException;
+use Thettler\FilamentActivityViewer\Facades\FilamentActivityViewer;
 use Thettler\FilamentActivityViewer\Testing\TestsFilamentActivityViewer;
 
 class FilamentActivityViewerServiceProvider extends PackageServiceProvider
@@ -30,32 +30,31 @@ class FilamentActivityViewerServiceProvider extends PackageServiceProvider
          * More info: https://github.com/spatie/laravel-package-tools
          */
         $package->name(static::$name)
+            ->hasConfigFile()
             ->hasCommands($this->getCommands())
             ->hasInstallCommand(function (InstallCommand $command): void {
                 $command
                     ->publishConfigFile()
-                    ->publishMigrations()
-                    ->askToRunMigrations()
+                  //  ->publishMigrations()
+                  //  ->askToRunMigrations()
                     ->askToStarRepoOnGitHub('thettler/filament-activity-viewer');
             });
 
-        $configFileName = $package->shortName();
-
-        if (file_exists($package->basePath("/../config/{$configFileName}.php"))) {
-            $package->hasConfigFile();
-        }
-
-        if (file_exists($package->basePath('/../database/migrations'))) {
+    /*    if (file_exists($package->basePath('/../database/migrations'))) {
             $package->hasMigrations($this->getMigrations());
         }
 
         if (file_exists($package->basePath('/../resources/lang'))) {
             $package->hasTranslations();
         }
-
+*/
         if (file_exists($package->basePath('/../resources/views'))) {
             $package->hasViews(static::$viewNamespace);
         }
+
+        \Livewire\Livewire::addLocation(
+            classNamespace: 'Thettler\\FilamentActivityViewer\\Components',
+        );
     }
 
     public function packageRegistered(): void {}
@@ -87,6 +86,22 @@ class FilamentActivityViewerServiceProvider extends PackageServiceProvider
 
         // Testing
         Testable::mixin(new TestsFilamentActivityViewer);
+
+        \Spatie\Activitylog\Facades\Activity::beforeLogging(function (Activity $activity): void {
+            if (app()->runningInConsole()) {
+                $origin = FilamentActivityViewer::setOrigin(config('filament-activity-viewer.console_origin'));
+            } else {
+                $origin = FilamentActivityViewer::getOrigin();
+            }
+
+            if (! $origin) {
+                throw new FilamentActivityViewerOriginMissingException;
+            }
+
+            $activity->properties = $activity
+                ->properties
+                ->put('meta', FilamentActivityViewer::getMeta());
+        });
     }
 
     protected function getAssetPackageName(): ?string

@@ -4,6 +4,8 @@ namespace Thettler\FilamentActivityViewer;
 
 use Filament\Contracts\Plugin;
 use Filament\Panel;
+use Thettler\FilamentActivityViewer\Pages\ListActivities;
+use Thettler\FilamentActivityViewer\Pages\ListAllActivities;
 
 class FilamentActivityViewerPlugin implements Plugin
 {
@@ -14,7 +16,10 @@ class FilamentActivityViewerPlugin implements Plugin
 
     public function register(Panel $panel): void
     {
-        //
+        $panel
+            ->pages([
+                ListAllActivities::class,
+            ]);
     }
 
     public function boot(Panel $panel): void

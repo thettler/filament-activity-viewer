@@ -14,12 +14,17 @@ use Filament\Support\SupportServiceProvider;
 use Filament\Tables\TablesServiceProvider;
 use Filament\Widgets\WidgetsServiceProvider;
 use Illuminate\Database\Eloquent\Factories\Factory;
+use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Foundation\Testing\LazilyRefreshDatabase;
+use Illuminate\Support\Facades\Schema;
 use Livewire\LivewireServiceProvider;
 use Orchestra\Testbench\Concerns\WithWorkbench;
 use Orchestra\Testbench\TestCase as Orchestra;
-use RyanChandler\BladeCaptureDirective\BladeCaptureDirectiveServiceProvider;
+use Spatie\Activitylog\ActivitylogServiceProvider;
 use Thettler\FilamentActivityViewer\FilamentActivityViewerServiceProvider;
+use Thettler\FilamentActivityViewer\Tests\Fixtures\TestPanelProvider;
+use Thettler\FilamentActivityViewer\Tests\Fixtures\User;
 
 class TestCase extends Orchestra
 {
@@ -33,13 +38,35 @@ class TestCase extends Orchestra
         Factory::guessFactoryNamesUsing(
             fn (string $modelName) => 'Thettler\\FilamentActivityViewer\\Database\\Factories\\' . class_basename($modelName) . 'Factory'
         );
+
+        $this->loadLaravelMigrations();
+
+        if (! class_exists(\CreateActivityLogTable::class)) {
+            include __DIR__ . '/../vendor/spatie/laravel-activitylog/database/migrations/create_activity_log_table.php.stub';
+        }
+
+        (new \CreateActivityLogTable)->up();
+
+        // Ensure database schema satisfies Spatie v4 model expectations for tests
+        if (! Schema::hasColumn('activity_log', 'batch_uuid')) {
+            Schema::table('activity_log', function (Blueprint $table) {
+                $table->uuid('batch_uuid')->nullable();
+            });
+        }
+
+        if (! Schema::hasColumn('activity_log', 'event')) {
+            Schema::table('activity_log', function (Blueprint $table) {
+                $table->string('event')->nullable();
+            });
+        }
+
+        Model::unguard();
     }
 
     protected function getPackageProviders($app)
     {
         $providers = [
             ActionsServiceProvider::class,
-            BladeCaptureDirectiveServiceProvider::class,
             BladeHeroiconsServiceProvider::class,
             BladeIconsServiceProvider::class,
             FilamentServiceProvider::class,
@@ -51,7 +78,9 @@ class TestCase extends Orchestra
             SupportServiceProvider::class,
             TablesServiceProvider::class,
             WidgetsServiceProvider::class,
+            ActivitylogServiceProvider::class,
             FilamentActivityViewerServiceProvider::class,
+            TestPanelProvider::class,
         ];
 
         sort($providers);
@@ -62,6 +91,10 @@ class TestCase extends Orchestra
     public function getEnvironmentSetUp($app): void
     {
         $app['config']->set('database.default', 'testing');
+        $app['config']->set('session.driver', 'array');
+        $app['config']->set('app.key', 'base64:Hupx3yAySikrM2/edkZQNQHslgDWYfiBfCuSThJ5SK8=');
+        $app['config']->set('auth.providers.users.model', User::class);
+
     }
 
     protected function defineDatabaseMigrations(): void
