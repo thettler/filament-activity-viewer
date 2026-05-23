@@ -2,7 +2,4 @@
 
 namespace Thettler\FilamentActivityViewer\Exceptions;
 
-class FilamentActivityViewerOriginMissingException extends \Exception
-{
-
-}
+class FilamentActivityViewerOriginMissingException extends \Exception {}

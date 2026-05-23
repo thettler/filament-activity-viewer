@@ -4,7 +4,6 @@ namespace Thettler\FilamentActivityViewer;
 
 use Filament\Contracts\Plugin;
 use Filament\Panel;
-use Thettler\FilamentActivityViewer\Pages\ListActivities;
 use Thettler\FilamentActivityViewer\Pages\ListAllActivities;
 
 class FilamentActivityViewerPlugin implements Plugin

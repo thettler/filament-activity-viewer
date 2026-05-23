@@ -3,17 +3,14 @@
 namespace Thettler\FilamentActivityViewer\Pages;
 
 use Filament\Forms\Contracts\HasForms;
-use Filament\Pages\Concerns\InteractsWithFormActions;
 use Filament\Resources\Pages\Concerns\InteractsWithRecord;
 use Filament\Resources\Pages\Page;
-use Filament\Resources\Resource;
 use Filament\Support\Icons\Heroicon;
 use Illuminate\Support\Collection;
 use Livewire\Attributes\Computed;
 use Livewire\WithPagination;
 use Spatie\Activitylog\Models\Activity;
 use Thettler\FilamentActivityViewer\Components\DefaultActivity;
-use Thettler\FilamentActivityViewer\Concerns\CanPaginate;
 
 class ListActivities extends Page implements HasForms
 {

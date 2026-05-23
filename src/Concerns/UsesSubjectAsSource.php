@@ -5,8 +5,6 @@ namespace Thettler\FilamentActivityViewer\Concerns;
 use Filament\Forms\Components\RichEditor\Models\Contracts\HasRichContent;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
-use Illuminate\Support\HtmlString;
-use Illuminate\View\View;
 use ReflectionClass;
 use ReflectionMethod;
 use Thettler\FilamentActivityViewer\Formatters\DateValueFormatter;
