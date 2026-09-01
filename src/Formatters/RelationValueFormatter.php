@@ -6,6 +6,8 @@ namespace Thettler\FilamentActivityViewer\Formatters;
 
 use Filament\Support\Contracts\HasLabel;
 use Illuminate\Contracts\Support\Htmlable;
+use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use Illuminate\Database\Eloquent\SoftDeletingScope;
 use Illuminate\View\View;
 use Thettler\FilamentActivityViewer\Concerns\Activity;
 use Thettler\FilamentActivityViewer\Concerns\ValueFormatter;
@@ -23,24 +25,22 @@ final class RelationValueFormatter implements ValueFormatter
         array $attributes,
         Activity $activity
     ): string|Htmlable|View|null|int|float|bool|array {
-        $relation = $activity->subject()?->{$this->relation};
+        $relation = $activity->subject()
+            ?->{$this->relation}()
+            ->getRelated()
+            ->newQuery()
+            ->withoutGlobalScopes([SoftDeletingScope::class])
+            ->find($value);
+
 
         if (!$relation) {
             return null;
         }
+        $labelAttribute = $this->label ?? config('filament-activity-viewer.relation_labels')[$relation::class] ?? null;
 
-        if ($this->label) {
-            return $relation->{$this->label};
-        }
+        $formatter = new ModelFormatter($relation, $relation->{$labelAttribute} ?? null);
 
-        if ($relation instanceof HasLabel) {
-            return $relation->getLabel();
-        }
 
-        if ($label = config('filament-activity-viewer.relation_labels')[$relation::class] ?? null){
-            return  $relation->{$label};
-        }
-
-        return $relation->getKey();
+        return $formatter->format($value, $attributeName, $attributes, $activity);
     }
 }

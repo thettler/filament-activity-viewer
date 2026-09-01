@@ -39,7 +39,9 @@ $value = $value();
 @elseif( $value instanceof \Illuminate\Contracts\Support\Htmlable)
     {{ $value }}
 @elseif(\Illuminate\Support\Str::isUrl($value))
-    <x-filament::link target="_blank" href="{{$value}}">{{$value}}</x-filament::link>
+    <x-filament-activity-viewer::link target="_blank" :href="$value">
+        {{$value}}
+    </x-filament-activity-viewer::link>
 @else
     {{$value}}
 @endif

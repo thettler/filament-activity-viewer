@@ -5,6 +5,7 @@
         <div class="relative flex items-start space-x-3">
             <div class="relative px-1">
                 <div class="flex size-10 fi-text-color-600 overflow-hidden items-center justify-center rounded-full bg-gray-100 ring-10 ring-white dark:bg-gray-800 dark:ring-gray-900">
+
                     {{
                         \Filament\Support\generate_icon_html(
                             icon: $this->getIcon(),
@@ -30,8 +31,8 @@
             </div>
             <div class="min-w-0 flex-1 py-1.5 space-y-2">
                 <div class="flex justify-between mb-4">
-                    <div class="text-sm text-gray-600 dark:text-gray-400 space-y-1">
-                        <div>
+                    <div class="text-sm text-gray-600 dark:text-gray-400 ">
+                        <div class="flex items-center gap-x-1">
                             @php
                                 $title = $this->title()
                             @endphp
@@ -43,17 +44,22 @@
                                 @foreach($title as $line)
                                     @if(is_string($line) || $line instanceof \Illuminate\Support\HtmlString)
                                         {{ $line }}
-                                    @elseif($title instanceof \Illuminate\View\View)
+                                    @elseif($line instanceof \Illuminate\View\View)
                                         {!! $line !!}
                                     @endif
                                 @endforeach
                             @endif
-                            <span class="whitespace-nowrap"
-                                  x-tooltip="{ content: @js($this->created_at_tooltip()), theme: $store.theme }"
-                            >{{$this->created_at()}}</span>
+
                         </div>
+                        <div>
+
+                        <span class="whitespace-nowrap"
+                              x-tooltip="{ content: @js($this->created_at_tooltip()), theme: $store.theme }"
+                        >{{$this->created_at()}}</span>
+                        </div>
+
                         @if(!empty($this->getTags()))
-                            <div class="flex items-center gap-2">
+                            <div class="flex items-center gap-2 mt-2">
                                 @foreach($this->getTags() as $tag)
                                     <x-filament::badge
                                             :color="$tag->getColor()"

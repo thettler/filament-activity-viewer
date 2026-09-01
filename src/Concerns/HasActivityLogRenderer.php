@@ -4,6 +4,8 @@ declare(strict_types=1);
 
 namespace Thettler\FilamentActivityViewer\Concerns;
 
+use App\Models\Answer;
+use App\Models\Question;
 use BackedEnum;
 use donatj\UserAgent\UserAgentParser;
 use Filament\Actions\Action;
@@ -27,6 +29,7 @@ use ReflectionMethod;
 use Spatie\Activitylog\Contracts\Activity as ActivityContract;
 use Thettler\FilamentActivityViewer\Data\Tag;
 use Thettler\FilamentActivityViewer\Formatters\EnumFormatter;
+use Thettler\FilamentActivityViewer\Formatters\ModelFormatter;
 
 trait HasActivityLogRenderer
 {
@@ -37,7 +40,7 @@ trait HasActivityLogRenderer
 
     public function getIcon(): string|null|BackedEnum
     {
-        return $this->subjectIcon() ?? $this->icon;
+        return $this->icon ?? $this->subjectIcon() ?? Heroicon::OutlinedCube;
     }
 
     public function getSecondaryIcon(): string|null|BackedEnum
@@ -63,7 +66,7 @@ trait HasActivityLogRenderer
         return Str::headline($name);
     }
 
-    public function formatAttributeValue(mixed $value, string $name): string|Htmlable|null|int|float|bool|array
+    public function formatAttributeValue(mixed $value, string $name): string|Htmlable|null|int|float|bool|array|View
     {
         $casts = array_filter(
             $this->getCasts(),
@@ -72,6 +75,7 @@ trait HasActivityLogRenderer
         );
 
         $cast = $casts[$name] ?? null;
+
         unset($casts[$name]);
         if (!$cast) {
             return $value;
@@ -95,6 +99,16 @@ trait HasActivityLogRenderer
 
     protected function castValue(mixed $cast, mixed $value, string $name): mixed
     {
+        $arguments = [];
+        if (is_string($cast)) {
+            $castBundle = explode(':', $cast, 2);
+            $cast = $castBundle[0];
+
+            if ($castBundle[1] ?? false) {
+                $arguments = explode(',', $castBundle[1]) ?? [];
+            }
+        }
+
         if ($cast instanceof ValueFormatter) {
             return $cast->format($value, $name, $this->activity->attribute_changes['attributes'] ?? [], $this);
         }
@@ -107,8 +121,12 @@ trait HasActivityLogRenderer
                 $this
             );
         }
-
-        return new $cast()->format($value, $name, $this->activity->attribute_changes['attributes'] ?? [], $this);
+        return new $cast(...$arguments)->format(
+            $value,
+            $name,
+            $this->activity->attribute_changes['attributes'] ?? [],
+            $this
+        );
     }
 
     public function title(): string|null|Htmlable|View|array
@@ -289,11 +307,16 @@ HTML
                 label: $this->subjectType()
             ),
             new Tag(
-                label: $this->activity->event,
+                label: $this->getEventName(),
                 color: $this->getColor(),
                 icon: $this->getSecondaryIcon(),
             ),
         ];
+    }
+
+    public function getEventName(): string
+    {
+        return $this->activity->event;
     }
 
     protected function getResourceUrl(Model $model, string $operation): ?string
@@ -325,7 +348,7 @@ HTML
         /** @var class-string<\Filament\Resources\Resource>|null $resource */
         $resource = Filament::getModelResource($model);
         if (!$resource) {
-            return $this->getResourceFallbackTitle($model);
+            return null;
         }
 
         return $resource::getNavigationIcon();

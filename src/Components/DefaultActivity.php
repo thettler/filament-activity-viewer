@@ -15,7 +15,7 @@ class DefaultActivity extends Component implements Activity, HasActions, HasSche
 {
     use HasActivityLogRenderer;
 
-    public string|\BackedEnum $icon = Heroicon::OutlinedCube;
+    public null|string|\BackedEnum $icon = null;
 
     public string|\BackedEnum|null $secondaryIcon = null;
 

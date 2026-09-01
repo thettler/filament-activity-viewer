@@ -13,7 +13,6 @@ use Thettler\FilamentActivityViewer\Concerns\UsesSubjectAsSource;
 
 final class CreateActivity extends DefaultActivity
 {
-
     use UsesSubjectAsSource;
 
     public string|BackedEnum|null $secondaryIcon = Heroicon::Plus;

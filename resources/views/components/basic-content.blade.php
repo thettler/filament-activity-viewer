@@ -42,7 +42,7 @@
                     @if($changes->has('old'))
                         <td class="hidden px-3 py-2 text-sm bg-red-500/5 dark:bg-red-500/10 text-gray-500 lg:table-cell dark:text-gray-400">
                             @php
-                                $value = $this->formatAttributeValue($changes['old'][$key], $key);
+                                $value = $this->formatAttributeValue($changes['old'][$key] ?? null, $key);
                             @endphp
                             @include('filament-activity-viewer::components.value',['value' => fn()=> $value, 'attributeName' => $key])
                         </td>

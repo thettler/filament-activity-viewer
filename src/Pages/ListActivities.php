@@ -48,6 +48,7 @@ class ListActivities extends Page implements HasForms
         return config('filament-activity-viewer.events');
     }
 
+
     #[Computed]
     public function activities()
     {

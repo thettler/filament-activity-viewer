@@ -10,6 +10,7 @@ use Livewire\Attributes\Computed;
 use Livewire\WithPagination;
 use Spatie\Activitylog\Models\Activity;
 use Thettler\FilamentActivityViewer\Components\DefaultActivity;
+use UnitEnum;
 
 class ListAllActivities extends Page
 {
@@ -20,6 +21,12 @@ class ListAllActivities extends Page
     protected static string|BackedEnum|null $navigationIcon = Heroicon::Square3Stack3d;
 
     protected static ?string $navigationLabel = 'All Activities';
+
+
+    public static function getNavigationGroup(): string|UnitEnum|null
+    {
+        return filament('filament-activity-viewer')->getNavigationGroup();
+    }
 
     public function getBreadcrumb(): string
     {
