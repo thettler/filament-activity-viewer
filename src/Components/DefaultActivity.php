@@ -5,7 +5,6 @@ namespace Thettler\FilamentActivityViewer\Components;
 use Filament\Actions\Contracts\HasActions;
 use Filament\Schemas\Contracts\HasSchemas;
 use Filament\Support\Colors\Color;
-use Filament\Support\Icons\Heroicon;
 use Livewire\Component;
 use Thettler\FilamentActivityViewer\Concerns\Activity;
 use Thettler\FilamentActivityViewer\Concerns\HasActivityLogRenderer;
@@ -14,7 +13,7 @@ class DefaultActivity extends Component implements Activity, HasActions, HasSche
 {
     use HasActivityLogRenderer;
 
-    public null|string|\BackedEnum $icon = null;
+    public null | string | \BackedEnum $icon = null;
 
     public string | \BackedEnum | null $secondaryIcon = null;
 

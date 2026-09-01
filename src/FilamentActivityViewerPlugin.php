@@ -11,7 +11,7 @@ use UnitEnum;
 
 class FilamentActivityViewerPlugin implements Plugin
 {
-    protected string|UnitEnum|null $navigationGroup = null;
+    protected string | UnitEnum | null $navigationGroup = null;
 
     protected bool $showAllAcivitys = true;
 
@@ -28,7 +28,7 @@ class FilamentActivityViewerPlugin implements Plugin
         return $plugin;
     }
 
-    public function navigationGroup(string|UnitEnum|null $navigationGroup): static
+    public function navigationGroup(string | UnitEnum | null $navigationGroup): static
     {
         $this->navigationGroup = $navigationGroup;
 
@@ -42,7 +42,7 @@ class FilamentActivityViewerPlugin implements Plugin
         return $this;
     }
 
-    public function getNavigationGroup(): string|UnitEnum|null
+    public function getNavigationGroup(): string | UnitEnum | null
     {
         return $this->navigationGroup;
     }

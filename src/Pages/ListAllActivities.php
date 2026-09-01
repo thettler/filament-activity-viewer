@@ -21,8 +21,7 @@ class ListAllActivities extends Page
 
     protected static ?string $navigationLabel = 'All Activities';
 
-
-    public static function getNavigationGroup(): string|UnitEnum|null
+    public static function getNavigationGroup(): string | UnitEnum | null
     {
         return filament('filament-activity-viewer')->getNavigationGroup();
     }

@@ -4,7 +4,6 @@ declare(strict_types=1);
 
 namespace Thettler\FilamentActivityViewer\Concerns;
 
-
 use BackedEnum;
 use donatj\UserAgent\UserAgentParser;
 use Filament\Actions\Action;
@@ -27,7 +26,6 @@ use ReflectionMethod;
 use Spatie\Activitylog\Contracts\Activity as ActivityContract;
 use Thettler\FilamentActivityViewer\Data\Tag;
 use Thettler\FilamentActivityViewer\Formatters\EnumFormatter;
-use Thettler\FilamentActivityViewer\Formatters\ModelFormatter;
 
 trait HasActivityLogRenderer
 {
@@ -64,7 +62,7 @@ trait HasActivityLogRenderer
         return Str::headline($name);
     }
 
-    public function formatAttributeValue(mixed $value, string $name): string | Htmlable | null | int | float | bool | array|View
+    public function formatAttributeValue(mixed $value, string $name): string | Htmlable | null | int | float | bool | array | View
     {
         $casts = array_filter(
             $this->getCasts(),
@@ -118,6 +116,7 @@ trait HasActivityLogRenderer
                 $this
             );
         }
+
         return new $cast(...$arguments)->format(
             $value,
             $name,
@@ -344,7 +343,7 @@ HTML
     {
         /** @var class-string<\Filament\Resources\Resource>|null $resource */
         $resource = Filament::getModelResource($model);
-        if (!$resource) {
+        if (! $resource) {
             return null;
         }
 

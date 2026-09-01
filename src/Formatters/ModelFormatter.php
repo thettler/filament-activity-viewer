@@ -18,19 +18,17 @@ final class ModelFormatter implements ValueFormatter
     /**
      * @param  class-string<Model>|Model  $model
      */
-    public function __construct(public Model|string $model, public ?string $label = null)
-    {
-    }
+    public function __construct(public Model | string $model, public ?string $label = null) {}
 
     public function format(
         mixed $value,
         string $attributeName,
         array $attributes,
         Activity $activity
-    ): string|Htmlable|View|null|int|float|bool|array {
+    ): string | Htmlable | View | null | int | float | bool | array {
         $model = is_string($this->model) ? $this->model::find($value) : $this->model;
 
-        if (!$model) {
+        if (! $model) {
             return null;
         }
 
@@ -42,23 +40,22 @@ final class ModelFormatter implements ValueFormatter
             $label = $model->getKey();
         }
 
-
         if ($url = $this->findeResourceUrl($model)) {
             return view('filament-activity-viewer::components.link', [
                 'slot' => $label,
                 'href' => $url,
             ]);
         }
+
         return $label;
     }
-
 
     protected function findeResourceUrl($model, Operation $operation = Operation::View): ?string
     {
         try {
             return Filament::getResourceUrl($model, $operation->value);
         } catch (\InvalidArgumentException $exception) {
-            if (!str_contains($exception->getMessage(), 'No Filament resource found for model')) {
+            if (! str_contains($exception->getMessage(), 'No Filament resource found for model')) {
                 throw $exception;
             }
 
