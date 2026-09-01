@@ -7,6 +7,7 @@ use Filament\Support\Facades\FilamentAsset;
 use Filament\Support\Facades\FilamentIcon;
 use Illuminate\Filesystem\Filesystem;
 use Livewire\Features\SupportTesting\Testable;
+use Livewire\Livewire;
 use Spatie\Activitylog\Models\Activity;
 use Spatie\LaravelPackageTools\Commands\InstallCommand;
 use Spatie\LaravelPackageTools\Package;
@@ -40,19 +41,19 @@ class FilamentActivityViewerServiceProvider extends PackageServiceProvider
                     ->askToStarRepoOnGitHub('thettler/filament-activity-viewer');
             });
 
-    /*    if (file_exists($package->basePath('/../database/migrations'))) {
-            $package->hasMigrations($this->getMigrations());
-        }
+        /*    if (file_exists($package->basePath('/../database/migrations'))) {
+                $package->hasMigrations($this->getMigrations());
+            }
 
-        if (file_exists($package->basePath('/../resources/lang'))) {
-            $package->hasTranslations();
-        }
+            if (file_exists($package->basePath('/../resources/lang'))) {
+                $package->hasTranslations();
+            }
 */
         if (file_exists($package->basePath('/../resources/views'))) {
             $package->hasViews(static::$viewNamespace);
         }
 
-        \Livewire\Livewire::addLocation(
+        Livewire::addLocation(
             classNamespace: 'Thettler\\FilamentActivityViewer\\Components',
         );
     }

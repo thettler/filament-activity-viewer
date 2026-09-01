@@ -9,5 +9,5 @@ use Illuminate\View\View;
 
 interface ValueFormatter
 {
-    public function format(mixed $value, string $attributeName, array $attributes, Activity $activity): string|Htmlable|View|null|int|float|bool|array;
+    public function format(mixed $value, string $attributeName, array $attributes, Activity $activity): string | Htmlable | View | null | int | float | bool | array;
 }

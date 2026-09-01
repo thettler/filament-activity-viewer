@@ -11,13 +11,10 @@ use Illuminate\Database\Eloquent\SoftDeletingScope;
 use Illuminate\View\View;
 use Thettler\FilamentActivityViewer\Concerns\Activity;
 use Thettler\FilamentActivityViewer\Concerns\ValueFormatter;
-use Thettler\FilamentActivityViewer\TestModel;
 
 final class RelationValueFormatter implements ValueFormatter
 {
-    public function __construct(public string $relation, public ?string $label = null)
-    {
-    }
+    public function __construct(public string $relation, public ?string $label = null) {}
 
     public function format(
         mixed $value,
@@ -33,7 +30,7 @@ final class RelationValueFormatter implements ValueFormatter
             ->find($value);
 
 
-        if (!$relation) {
+        if (! $relation) {
             return null;
         }
         $labelAttribute = $this->label ?? config('filament-activity-viewer.relation_labels')[$relation::class] ?? null;

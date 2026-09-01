@@ -6,7 +6,7 @@ use BackedEnum;
 
 class FilamentActivityViewer
 {
-    protected string|\BackedEnum|null $origin = null;
+    protected string | \BackedEnum | null $origin = null;
 
     protected ?string $ip = null;
 
@@ -19,25 +19,28 @@ class FilamentActivityViewer
         return $this;
     }
 
-    public function setOrigin(\BackedEnum|string|null $origin): FilamentActivityViewer
+    public function setOrigin(BackedEnum | string | null $origin): FilamentActivityViewer
     {
         $enumClass = config('filament-activity-viewer.origin');
 
-        if (!$enumClass) {
+        if (! $enumClass) {
             $this->origin = $origin;
+
             return $this;
         }
 
         if (is_a($origin, $enumClass)) {
             $this->origin = $origin;
+
             return $this;
         }
 
         if ($origin instanceof BackedEnum) {
-            throw new \InvalidArgumentException('Origin must be of type string or '.$enumClass);
+            throw new \InvalidArgumentException('Origin must be of type string or ' . $enumClass);
         }
 
         $this->origin = $enumClass::from($origin);
+
         return $this;
     }
 
@@ -58,7 +61,7 @@ class FilamentActivityViewer
         return $this->ip;
     }
 
-    public function getOrigin(): \BackedEnum|string|null
+    public function getOrigin(): BackedEnum | string | null
     {
         return $this->origin;
     }

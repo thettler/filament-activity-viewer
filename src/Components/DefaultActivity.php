@@ -2,7 +2,6 @@
 
 namespace Thettler\FilamentActivityViewer\Components;
 
-
 use Filament\Actions\Contracts\HasActions;
 use Filament\Schemas\Contracts\HasSchemas;
 use Filament\Support\Colors\Color;
@@ -17,9 +16,9 @@ class DefaultActivity extends Component implements Activity, HasActions, HasSche
 
     public null|string|\BackedEnum $icon = null;
 
-    public string|\BackedEnum|null $secondaryIcon = null;
+    public string | \BackedEnum | null $secondaryIcon = null;
 
-    public string|array|Color|null $color = null;
+    public string | array | Color | null $color = null;
 
     public array $casts = [];
 }

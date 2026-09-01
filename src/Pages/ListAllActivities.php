@@ -3,7 +3,6 @@
 namespace Thettler\FilamentActivityViewer\Pages;
 
 use BackedEnum;
-use Filament\Resources\Pages\Concerns\InteractsWithRecord;
 use Filament\Pages\Page;
 use Filament\Support\Icons\Heroicon;
 use Livewire\Attributes\Computed;
@@ -18,7 +17,7 @@ class ListAllActivities extends Page
 
     protected string $view = 'filament-activity-viewer::pages.list-all-activities';
 
-    protected static string|BackedEnum|null $navigationIcon = Heroicon::Square3Stack3d;
+    protected static string | BackedEnum | null $navigationIcon = Heroicon::Square3Stack3d;
 
     protected static ?string $navigationLabel = 'All Activities';
 
@@ -55,15 +54,15 @@ class ListAllActivities extends Page
                 }
 
                 if (class_exists($activity->event) && is_subclass_of(
-                        $activity->event,
-                        \Thettler\FilamentActivityViewer\Concerns\Activity::class
-                    )) {
+                    $activity->event,
+                    \Thettler\FilamentActivityViewer\Concerns\Activity::class
+                )) {
                     return ['activity' => $activity, 'component' => $activity->event];
                 }
 
                 return [
                     'activity' => $activity,
-                    'component' => config('filament-activity-viewer.events.default', DefaultActivity::class)
+                    'component' => config('filament-activity-viewer.events.default', DefaultActivity::class),
                 ];
             });
     }

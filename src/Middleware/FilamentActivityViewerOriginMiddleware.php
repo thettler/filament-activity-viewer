@@ -4,7 +4,6 @@ declare(strict_types=1);
 
 namespace Thettler\FilamentActivityViewer\Middleware;
 
-
 use Closure;
 use Illuminate\Http\Request;
 use Symfony\Component\HttpFoundation\Response;
@@ -17,7 +16,7 @@ final class FilamentActivityViewerOriginMiddleware
      *
      * @param  Closure(Request): (Response)  $next
      */
-    public function handle(Request $request, Closure $next, string|\BackedEnum $origin): Response
+    public function handle(Request $request, Closure $next, string | \BackedEnum $origin): Response
     {
         FilamentActivityViewer::setOrigin($origin);
         FilamentActivityViewer::setIp($request->ip());

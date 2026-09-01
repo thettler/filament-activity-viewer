@@ -25,9 +25,10 @@ class EnumFormatter implements ValueFormatter
     ): string | Htmlable | View | null | int | float | bool | array {
 
         $enum = $this->enum::tryFrom($value ?? '');
-        if (!$enum) {
+        if (! $enum) {
             return null;
         }
+
         return view('filament-activity-viewer::components.enum', [
             'label' => $enum instanceof HasLabel ? $enum->getLabel() : $enum->name,
             'color' => $enum instanceof HasColor ? $enum->getColor() : null,

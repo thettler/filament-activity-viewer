@@ -4,8 +4,7 @@ declare(strict_types=1);
 
 namespace Thettler\FilamentActivityViewer\Concerns;
 
-use App\Models\Answer;
-use App\Models\Question;
+
 use BackedEnum;
 use donatj\UserAgent\UserAgentParser;
 use Filament\Actions\Action;
@@ -19,7 +18,6 @@ use Filament\Support\Icons\Heroicon;
 use Illuminate\Contracts\Support\Htmlable;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Arr;
-use Illuminate\Support\Facades\Log;
 use Illuminate\Support\HtmlString;
 use Illuminate\Support\Str;
 use Illuminate\View\View;
@@ -38,12 +36,12 @@ trait HasActivityLogRenderer
 
     public ActivityContract $activity;
 
-    public function getIcon(): string|null|BackedEnum
+    public function getIcon(): string | null | BackedEnum
     {
         return $this->icon ?? $this->subjectIcon() ?? Heroicon::OutlinedCube;
     }
 
-    public function getSecondaryIcon(): string|null|BackedEnum
+    public function getSecondaryIcon(): string | null | BackedEnum
     {
         return $this->secondaryIcon;
     }
@@ -56,7 +54,7 @@ trait HasActivityLogRenderer
         return $this->casts;
     }
 
-    public function getColor(): string|array|Color|null
+    public function getColor(): string | array | Color | null
     {
         return $this->color;
     }
@@ -66,18 +64,17 @@ trait HasActivityLogRenderer
         return Str::headline($name);
     }
 
-    public function formatAttributeValue(mixed $value, string $name): string|Htmlable|null|int|float|bool|array|View
+    public function formatAttributeValue(mixed $value, string $name): string | Htmlable | null | int | float | bool | array|View
     {
         $casts = array_filter(
             $this->getCasts(),
-            fn(string $key): bool => str_starts_with($key, $name),
+            fn (string $key): bool => str_starts_with($key, $name),
             ARRAY_FILTER_USE_KEY
         );
 
         $cast = $casts[$name] ?? null;
-
         unset($casts[$name]);
-        if (!$cast) {
+        if (! $cast) {
             return $value;
         }
 
@@ -88,10 +85,10 @@ trait HasActivityLogRenderer
         $value = $this->castValue($cast, $value, $name);
 
         return collect($casts)->mapWithKeys(
-            fn(mixed $cast, $key) => [
-                str_replace($name.'.', '', $key) => str_replace($name.'.', '', $key)
-                        |> (fn($x) => Arr::get($value, $x))
-                        |> (fn($x) => $this->castValue($cast, $x, $key)),
+            fn (mixed $cast, $key) => [
+                str_replace($name . '.', '', $key) => str_replace($name . '.', '', $key)
+                        |> (fn ($x) => Arr::get($value, $x))
+                        |> (fn ($x) => $this->castValue($cast, $x, $key)),
             ],
         )
             ->toArray();
@@ -129,7 +126,7 @@ trait HasActivityLogRenderer
         );
     }
 
-    public function title(): string|null|Htmlable|View|array
+    public function title(): string | null | Htmlable | View | array
     {
         return [
             $this->causerLinkTag(),
@@ -138,12 +135,12 @@ trait HasActivityLogRenderer
         ];
     }
 
-    public function description(): string|null|Htmlable|View
+    public function description(): string | null | Htmlable | View
     {
         return $this->activity->description;
     }
 
-    public function content(): string|null|Htmlable|View
+    public function content(): string | null | Htmlable | View
     {
         if (empty($this->activity->attribute_changes)) {
             return null;
@@ -152,7 +149,7 @@ trait HasActivityLogRenderer
         return view('filament-activity-viewer::components.basic-content', ['activity' => $this]);
     }
 
-    public function meta(): string|null|Htmlable|View
+    public function meta(): string | null | Htmlable | View
     {
         $meta = $this->activity->properties['meta'] ?? null;
         if ($meta === null) {
@@ -185,9 +182,9 @@ trait HasActivityLogRenderer
         return $this->activity->created_at->format('Y-m-d H:i:s');
     }
 
-    public function causerName(): string|Htmlable
+    public function causerName(): string | Htmlable
     {
-        if (!$this->activity->causer) {
+        if (! $this->activity->causer) {
             return 'Anonymous';
         }
 
@@ -196,7 +193,7 @@ trait HasActivityLogRenderer
 
     public function causerUrl(): ?string
     {
-        if (!$this->activity->causer) {
+        if (! $this->activity->causer) {
             return null;
         }
         $url = $this->getResourceUrl($this->activity->causer, Operation::View->value);
@@ -205,7 +202,7 @@ trait HasActivityLogRenderer
         return $url;
     }
 
-    public function causerLinkTag(): null|string|Htmlable
+    public function causerLinkTag(): null | string | Htmlable
     {
         return new HtmlString(
             <<<HTML
@@ -220,20 +217,20 @@ HTML
 
     public function subject(): ?Model
     {
-        return once(fn() => $this->activity->subject);
+        return once(fn () => $this->activity->subject);
     }
 
-    public function subjectName(): string|Htmlable
+    public function subjectName(): string | Htmlable
     {
         return $this->getResourceTitle($this->subject());
     }
 
-    public function subjectType(): string|Htmlable
+    public function subjectType(): string | Htmlable
     {
         return $this->getResourceFallbackType($this->subject());
     }
 
-    public function subjectIcon(): string|Htmlable|BackedEnum|null
+    public function subjectIcon(): string | Htmlable | BackedEnum | null
     {
         return $this->getResourceIcon($this->subject());
     }
@@ -246,7 +243,7 @@ HTML
         return $url;
     }
 
-    public function subjectLinkTag(): null|string|Htmlable
+    public function subjectLinkTag(): null | string | Htmlable
     {
         return new HtmlString(
             <<<HTML
@@ -286,7 +283,7 @@ HTML
 
         $actions = collect($reflection->getMethods(ReflectionMethod::IS_PUBLIC))
             ->filter(function (ReflectionMethod $method) {
-                if (!$method->getAttributes(\Thettler\FilamentActivityViewer\Attributes\Action::class)) {
+                if (! $method->getAttributes(\Thettler\FilamentActivityViewer\Attributes\Action::class)) {
                     return false;
                 }
 
@@ -324,7 +321,7 @@ HTML
         try {
             return Filament::getResourceUrl($model, $operation);
         } catch (InvalidArgumentException $exception) {
-            if (!str_contains($exception->getMessage(), 'No Filament resource found for model')) {
+            if (! str_contains($exception->getMessage(), 'No Filament resource found for model')) {
                 throw $exception;
             }
 
@@ -336,14 +333,14 @@ HTML
     {
         /** @var class-string<\Filament\Resources\Resource>|null $resource */
         $resource = Filament::getModelResource($model);
-        if (!$resource) {
+        if (! $resource) {
             return $this->getResourceFallbackTitle($model);
         }
 
         return $resource::getRecordTitle($model) ?? $this->getResourceFallbackTitle($model);
     }
 
-    protected function getResourceIcon(Model $model): string|BackedEnum|null|Htmlable
+    protected function getResourceIcon(Model $model): string | BackedEnum | null | Htmlable
     {
         /** @var class-string<\Filament\Resources\Resource>|null $resource */
         $resource = Filament::getModelResource($model);
@@ -359,7 +356,7 @@ HTML
         /** @var class-string<\Filament\Resources\Resource>|null $resource */
         $resource = Filament::getModelResource($model);
 
-        if (!$resource) {
+        if (! $resource) {
             return $this->getResourceFallbackType($model);
         }
 
@@ -368,7 +365,7 @@ HTML
 
     protected function getResourceFallbackTitle(Model $model): string
     {
-        return $this->getResourceFallbackType($model).':'.$model->getKey();
+        return $this->getResourceFallbackType($model) . ':' . $model->getKey();
     }
 
     protected function getResourceFallbackType(Model $model): string
