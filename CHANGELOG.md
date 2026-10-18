@@ -2,6 +2,10 @@
 
 All notable changes to `filament-activity-viewer` will be documented in this file.
 
+## v0.0.2 - 2026-10-18
+
+**Full Changelog**: https://github.com/thettler/filament-activity-viewer/compare/v0.0.1...v0.0.2
+
 ## v0.0.1 - 2026-09-01
 
 **Full Changelog**: https://github.com/thettler/filament-activity-viewer/commits/v0.0.1
