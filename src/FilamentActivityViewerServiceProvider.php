@@ -89,7 +89,7 @@ class FilamentActivityViewerServiceProvider extends PackageServiceProvider
         Testable::mixin(new TestsFilamentActivityViewer);
 
         \Spatie\Activitylog\Facades\Activity::beforeLogging(function (Activity $activity): void {
-            if (app()->runningInConsole()) {
+            if (FilamentActivityViewer::getOrigin() === null && app()->runningInConsole()){
                 $origin = FilamentActivityViewer::setOrigin(config('filament-activity-viewer.console_origin'));
             } else {
                 $origin = FilamentActivityViewer::getOrigin();
