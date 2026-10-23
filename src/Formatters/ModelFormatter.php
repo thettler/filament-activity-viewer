@@ -33,7 +33,7 @@ final class ModelFormatter implements ValueFormatter
         }
 
         if ($this->label !== null) {
-            $label = $model->{$this->label};
+            $label = $this->label;
         } elseif ($model instanceof HasLabel) {
             $label = $model->getLabel();
         } else {
